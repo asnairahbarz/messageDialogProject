@@ -5,43 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Dialog</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        #logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 150px;
+            z-index: 10;
+        }
+        .slider-container {
+            display: flex;
+            position: absolute;
+            top: 180px;
+            left: 20px;
+        }
+        .slider {
+            width: 800px;
+            height: 500px;
+            overflow: hidden;
+            border: 2px solid white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 300%;
+            height: 100%;
+        }
+        .slide {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 60px;
+            color: black;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7), 0 0 25px rgba(255, 0, 0, 0.5);
+            margin-left: 30px;
+            animation: pulse 2s infinite;
+            font-weight: bold;
+            height: 500px;
+        }
+        .proceed-button {
+            margin-top: 20px;
+            font-size: 20px;
+            padding: 10px 20px;
+            background-color: #ff5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .proceed-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .background {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        .dialog {
+            background: white;
+            border: 1px solid black;
+            padding: 20px;
+            border-radius: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            display: none;
+        }
+        .danger-sign {
+            font-size: 48px;
+            color: red;
+        }
+        .warning {
+            animation: shake 0.5s infinite;
+            font-family: 'Creepster', cursive;
+            font-size: 36px;
+            color: darkred;
+            text-shadow: 2px 2px 10px black;
+        }
+        @keyframes shake {
+            0% { transform: translate(0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+            100% { transform: translate(0); }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
     <audio id="backgroundSound" src="background.mp3" preload="auto" loop></audio>
     
-    <div id="startButton" onclick="startAudio(); showDialog();" style="cursor: pointer; font-size: 24px; text-align: center; margin-top: 20%;">Click here to start</div>
+    <div id="overlay" onclick="startAudio();" style="height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; cursor: pointer; z-index: 1000;"></div>
+    
+    <img id="logo" src="logo.png" alt="Logo">
 
-    <div class="background" id="background" style="display: none;">
+    <div class="slider-container">
+        <div class="slider">
+            <div class="slides" id="slides">
+                <img class="slide" src="slide1.jpg" alt="Slide 1">
+                <img class="slide" src="slide2.jpg" alt="Slide 2">
+                <img class="slide" src="slide3.jpg" alt="Slide 3">
+            </div>
+        </div>
+        <div class="tagline">
+            Blend Your Style,<br>
+            Stay Trend!
+            <button class="proceed-button" id="proceedBtn" onclick="showDialog()">Proceed</button>
+        </div>
+    </div>
+
+    <div class="background" id="background">
         <div class="dialog" id="messageDialog">
             <p>Have a great day, Jiciel!</p>
             <button onclick="closeDialog()">Close</button>
         </div>
-        <div class="dialog" id="confirmCloseDialog" style="display: none;">
+        <div class="dialog" id="confirmCloseDialog">
             <p>Are you sure you want to close the window?</p>
             <button onclick="confirmClose(true)">Yes</button>
             <button onclick="confirmClose(false)">No</button>
         </div>
-        <div class="dialog" id="readyDialog" style="display: none;">
+        <div class="dialog" id="readyDialog">
             <p>Are you ready for what will happen?</p>
             <button onclick="ready(true)">Yes</button>
             <button onclick="ready(false)">No</button>
         </div>
-        <div class="dialog warning" id="warningDialog" style="display: none;">
+        <div class="dialog warning" id="warningDialog">
             <div class="danger-sign">⚠️</div>
-            <p>You are being hacked! Loading...</p>
-            <div class="loading"></div>
+            <p>You are being hacked!</p>
         </div>
         <div class="sparkling-heart" id="heart" style="display: none;">❤️</div>
     </div>
 
     <audio id="alertSound" src="alarm.mp3" preload="auto"></audio>
-    <script src="script.js"></script>
     <script>
+        let currentIndex = 0;
+        const slideDuration = 3000; // Duration for each slide
+        const transitionDuration = 500; // Transition duration
+
+        function showNextSlide() {
+            const slides = document.getElementById('slides');
+            currentIndex = (currentIndex + 1) % 3; // Cycle through 3 slides
+            slides.style.transition = `transform ${transitionDuration}ms ease`;
+            slides.style.transform = 'translateX(' + (-currentIndex * 100) + '%)';
+        }
+
+        setInterval(showNextSlide, slideDuration + transitionDuration); // Total time for each slide
+
         function startAudio() {
             const audio = document.getElementById('backgroundSound');
             audio.play().catch(error => {
                 console.error('Error playing audio:', error);
             });
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function showDialog() {
+            document.getElementById('background').style.display = 'flex';
+            document.getElementById('messageDialog').style.display = 'block';
+            document.getElementById('proceedBtn').disabled = true; // Disable the button after click
+        }
+
+        function closeDialog() {
+            document.getElementById('messageDialog').style.display = 'none';
+            document.getElementById('confirmCloseDialog').style.display = 'block';
+        }
+
+        function confirmClose(answer) {
+            if (answer) {
+                document.getElementById('confirmCloseDialog').style.display = 'none';
+                document.getElementById('readyDialog').style.display = 'block';
+            } else {
+                document.getElementById('confirmCloseDialog').style.display = 'none';
+                document.getElementById('messageDialog').style.display = 'block';
+            }
+        }
+
+        function ready(answer) {
+            if (answer) {
+                document.getElementById('readyDialog').style.display = 'none';
+                document.getElementById('warningDialog').style.display = 'block';
+
+                const audio = document.getElementById('backgroundSound');
+                audio.pause();
+                audio.currentTime = 0;
+
+                document.getElementById('background').style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(3000);
+                }
+
+                const alertAudio = document.getElementById('alertSound');
+                alertAudio.play();
+
+                // Hide warning after 3 seconds and redirect to Facebook
+                setTimeout(() => {
+                    document.getElementById('warningDialog').style.display = 'none';
+                    window.location.href = 'https://www.facebook.com';
+                }, 3000);
+            } else {
+                document.getElementById('readyDialog').style.display = 'none';
+                const heart = document.getElementById('heart');
+                heart.style.display = 'block';
+                setTimeout(() => {
+                    heart.style.display = 'none';
+                }, 3000);
+            }
         }
     </script>
 </body>
