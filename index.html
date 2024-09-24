@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Dialog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <audio id="backgroundSound" src="background.mp3" preload="auto" loop></audio>
+    
+    <div id="startButton" onclick="startAudio(); showDialog();" style="cursor: pointer; font-size: 24px; text-align: center; margin-top: 20%;">Click here to start</div>
+
+    <div class="background" id="background" style="display: none;">
+        <div class="dialog" id="messageDialog">
+            <p>Have a great day, Jiciel!</p>
+            <button onclick="closeDialog()">Close</button>
+        </div>
+        <div class="dialog" id="confirmCloseDialog" style="display: none;">
+            <p>Are you sure you want to close the window?</p>
+            <button onclick="confirmClose(true)">Yes</button>
+            <button onclick="confirmClose(false)">No</button>
+        </div>
+        <div class="dialog" id="readyDialog" style="display: none;">
+            <p>Are you ready for what will happen?</p>
+            <button onclick="ready(true)">Yes</button>
+            <button onclick="ready(false)">No</button>
+        </div>
+        <div class="dialog warning" id="warningDialog" style="display: none;">
+            <div class="danger-sign">⚠️</div>
+            <p>You are being hacked! Loading...</p>
+            <div class="loading"></div>
+        </div>
+        <div class="sparkling-heart" id="heart" style="display: none;">❤️</div>
+    </div>
+
+    <audio id="alertSound" src="alarm.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+    <script>
+        function startAudio() {
+            const audio = document.getElementById('backgroundSound');
+            audio.play().catch(error => {
+                console.error('Error playing audio:', error);
+            });
+        }
+    </script>
+</body>
+</html>

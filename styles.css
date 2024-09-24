@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('https://media.tenor.com/images/b38d0b32cb5ed85d5cc1e4b79216a821/tenor.gif'); /* Set the GIF as background */
+    background-size: cover; /* Cover the entire page */
+    background-repeat: no-repeat; /* Prevent repetition */
+    color: #00796b; /* Text color */
+}
+
+a {
+    font-size: 20px;
+    text-decoration: underline;
+    color: #006064; /* Darker teal for contrast */
+}
+
+.background {
+    background-color: rgba(255, 255, 255, 0.8); /* Light overlay for readability */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.dialog {
+    background: #ffffff; /* White dialog background */
+    border: 2px solid #00796b; /* Teal border */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.dialog.warning {
+    background: #900; /* Dark red for warning */
+    color: #fff; /* White text */
+}
+
+.danger-sign {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.loading {
+    width: 50px;
+    height: 5px;
+    background: #ff0000; /* Red loading bar */
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+    0% { width: 0; }
+    100% { width: 50px; }
+}
+
+.sparkling-heart {
+    font-size: 50px;
+    animation: sparkle 1s infinite alternate;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes sparkle {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
