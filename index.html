@@ -23,11 +23,16 @@
             display: flex;
             position: absolute;
             top: 180px;
-            left: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            flex-direction: column;
+            align-items: center;
+            width: 90%; /* Full width with margin */
         }
         .slider {
-            width: 800px;
-            height: 500px;
+            width: 100%;
+            max-width: 800px;
+            height: 300px; 
             overflow: hidden;
             border: 2px solid white;
             border-radius: 10px;
@@ -46,26 +51,27 @@
         }
         .tagline {
             display: flex;
-            align-items: center;
-            justify-content: center;
             flex-direction: column;
-            font-size: 60px;
+            align-items: center;
+            font-size: 36px; 
             color: black;
             text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7), 0 0 25px rgba(255, 0, 0, 0.5);
-            margin-left: 30px;
+            margin: 20px 0;
             animation: pulse 2s infinite;
             font-weight: bold;
-            height: 500px;
+            text-align: center; /* Center text */
         }
         .proceed-button {
             margin-top: 20px;
-            font-size: 20px;
-            padding: 10px 20px;
+            font-size: 16px; 
+            padding: 10px 15px;
             background-color: #ff5733;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%; /* Full width button */
+            max-width: 300px; /* Max width for button */
         }
         .proceed-button:disabled {
             background-color: #ccc;
@@ -93,6 +99,8 @@
             transform: translate(-50%, -50%);
             z-index: 20;
             display: none;
+            width: 80%; 
+            max-width: 400px; 
         }
         .danger-sign {
             font-size: 48px;
@@ -101,16 +109,47 @@
         .warning {
             animation: shake 0.5s infinite;
             font-family: 'Creepster', cursive;
-            font-size: 36px;
+            font-size: 24px; 
             color: darkred;
             text-shadow: 2px 2px 10px black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         @keyframes shake {
-            0% { transform: translate(0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-            100% { transform: translate(0); }
+            0% { transform: translate(-50%, -50%); }
+            25% { transform: translate(calc(-50% - 5px), -50%); }
+            50% { transform: translate(calc(-50% + 5px), -50%); }
+            75% { transform: translate(calc(-50% - 5px), -50%); }
+            100% { transform: translate(-50%, -50%); }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .tagline {
+                font-size: 24px; 
+            }
+            .proceed-button {
+                font-size: 14px; 
+                padding: 8px 10px;
+            }
+            .slider {
+                height: 200px; 
+            }
+            .dialog {
+                width: 90%; /* Full width on mobile */
+                max-width: none; /* Remove max width for smaller devices */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #logo {
+                width: 120px; /* Smaller logo on mobile */
+            }
+            .tagline {
+                font-size: 20px; 
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
@@ -162,17 +201,17 @@
     <audio id="alertSound" src="alarm.mp3" preload="auto"></audio>
     <script>
         let currentIndex = 0;
-        const slideDuration = 3000; // Duration for each slide
-        const transitionDuration = 500; // Transition duration
+        const slideDuration = 3000; 
+        const transitionDuration = 500; 
 
         function showNextSlide() {
             const slides = document.getElementById('slides');
-            currentIndex = (currentIndex + 1) % 3; // Cycle through 3 slides
+            currentIndex = (currentIndex + 1) % 3; 
             slides.style.transition = `transform ${transitionDuration}ms ease`;
             slides.style.transform = 'translateX(' + (-currentIndex * 100) + '%)';
         }
 
-        setInterval(showNextSlide, slideDuration + transitionDuration); // Total time for each slide
+        setInterval(showNextSlide, slideDuration + transitionDuration); 
 
         function startAudio() {
             const audio = document.getElementById('backgroundSound');
@@ -185,7 +224,7 @@
         function showDialog() {
             document.getElementById('background').style.display = 'flex';
             document.getElementById('messageDialog').style.display = 'block';
-            document.getElementById('proceedBtn').disabled = true; // Disable the button after click
+            document.getElementById('proceedBtn').disabled = true;
         }
 
         function closeDialog() {
@@ -221,7 +260,6 @@
                 const alertAudio = document.getElementById('alertSound');
                 alertAudio.play();
 
-                // Hide warning after 3 seconds and redirect to Facebook
                 setTimeout(() => {
                     document.getElementById('warningDialog').style.display = 'none';
                     window.location.href = 'https://www.facebook.com';
